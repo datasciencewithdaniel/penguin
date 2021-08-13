@@ -3,15 +3,18 @@ from dotenv import load_dotenv
 
 from discord.ext import commands
 
-from bot import responses
+from bot import admin, notifications, responses, roles
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-# GUILD = os.getenv('DISCORD_GUILD')
+GUILD = os.getenv("DISCORD_GUILD")
 
-bot = commands.Bot(command_prefix="!")
+bot = commands.Bot(command_prefix=".")
 
+bot.add_cog(admin.admin(bot, GUILD))
+bot.add_cog(notifications.notifications(bot))
 bot.add_cog(responses.responses(bot))
+bot.add_cog(roles.roles(bot))
 
 
 @bot.event

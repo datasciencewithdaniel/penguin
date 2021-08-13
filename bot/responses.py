@@ -12,7 +12,7 @@ class responses(commands.Cog):
 
     @commands.command(name="bye", help="Penguin is here to help")
     async def goodbye(self, ctx):
-        response = "Until next time"
+        response = "Until next time :)"
         await ctx.send(response)
 
     @commands.command(name="discord", help="Join us on Discord")
