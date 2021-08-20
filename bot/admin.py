@@ -11,6 +11,11 @@ class admin(commands.Cog):
     async def on_ready(self):
         guild = discord.utils.get(self.bot.guilds, name=self.GUILD)
         print(
-            f"{self.bot.user} is connected to the following guild:\n"
-            f"{guild.name} (id: {guild.id})"
+            "|" + "-" * 104 + "|\n"
+            f"| {str(self.bot.user):^102} |\n"
+            f"| {guild.name:^102} |\n"
+            f"| {guild.id:^102} |\n"
+            "|" + "-" * 104 + "|\n"
+            f"| {'User':^32} | {'Channel':^32} | {'Command':^32} |\n"
+            "|" + "-" * 104 + "|"
         )
