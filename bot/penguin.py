@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-
+from discord import Intents
 from discord.ext import commands
 
 from bot import admin, notifications, responses, roles
@@ -9,7 +9,7 @@ load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 GUILD = os.getenv("DISCORD_GUILD")
 
-bot = commands.Bot(command_prefix=".")
+bot = commands.Bot(command_prefix=".", intents=Intents.all())
 
 bot.add_cog(admin.admin(bot, GUILD))
 bot.add_cog(notifications.notifications(bot))

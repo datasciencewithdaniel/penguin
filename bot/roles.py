@@ -1,5 +1,8 @@
 from discord.ext import commands
 from discord.utils import get
+import unicodedata
+from discord import RawReactionActionEvent
+from bot import helpers
 
 
 class roles(commands.Cog):
@@ -10,17 +13,48 @@ class roles(commands.Cog):
     async def on_ready(self):
         channel = self.bot.get_channel(851436058172194851)
         message = await channel.send("test reaction roles")
-        await message.add_reaction(emoji="🏃")
-        await message.add_reaction(emoji="👍")
-        await message.add_reaction(emoji="😀")
-        await message.add_reaction(emoji="\U0001F970")
+        await message.add_reaction(emoji=helpers.find_emoji("SNAKE"))
+        await message.add_reaction(emoji=helpers.find_emoji("OCTOPUS"))
+        await message.add_reaction(emoji=helpers.find_emoji("PENGUIN"))
+        await message.add_reaction(emoji=helpers.find_emoji("SPOUTING WHALE"))
+
+    async def reaction_edits(self, payload, action="remove"):
+        channel = self.bot.get_channel(
+            payload.channel_id
+        )  # IMPORTANT - WELCOME CHANNEL ONLY
+
+        reactions = [
+            "SNAKE",  # DEVELOPER
+            "OCTOPUS",  # OBSERVER
+            "PENGUIN",
+            "SPOUTING WHALE",
+            "MAMMOTH",
+        ]
+
+        guild = self.bot.get_guild(payload.guild_id)
+        user = guild.get_member(payload.user_id)
+        emoji = unicodedata.name(payload.emoji.name)
+
+        if user.name == "Penguin" or emoji not in reactions:
+            return False
+        if emoji == "SNAKE":
+            role = get(guild.roles, name="Developer")
+        elif emoji == "OCTOPUS":
+            role = get(guild.roles, name="Observer")
+        elif emoji == "PENGUIN":
+            role = get(guild.roles, name="bot-testing")
+
+        helpers.role_log(user, payload.emoji, channel, role, payload.event_type)
+
+        if action == "add":
+            await user.add_roles(role)
+        else:
+            await user.remove_roles(role)
 
     @commands.Cog.listener()
-    async def on_reaction_add(self, reaction, user):
-        channel = self.bot.get_channel(851436058172194851)
-        # print(reaction.message.author.name)
-        # if reaction.message.channel.id != channel:
-        #     return False
-        if reaction.emoji == "🏃":
-            role = get(user.guild.roles, name="bot-testing")
-        await user.add_roles(role)
+    async def on_raw_reaction_add(self, payload: RawReactionActionEvent):
+        await self.reaction_edits(payload, "add")
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_remove(self, payload: RawReactionActionEvent):
+        await self.reaction_edits(payload)
