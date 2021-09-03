@@ -6,8 +6,9 @@ from bot import helpers
 
 
 class roles(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot, logger):
         self.bot = bot
+        self.logger = logger
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -22,6 +23,10 @@ class roles(commands.Cog):
         channel = self.bot.get_channel(
             payload.channel_id
         )  # IMPORTANT - WELCOME CHANNEL ONLY
+
+        # https://discord.com/channels/851059417562742854/851074616947769354/851452116799062026
+        if channel != self.bot.get_channel(851074616947769354):
+            return False
 
         reactions = [
             "SNAKE",  # DEVELOPER
@@ -44,7 +49,9 @@ class roles(commands.Cog):
         elif emoji == "PENGUIN":
             role = get(guild.roles, name="bot-testing")
 
-        helpers.role_log(user, payload.emoji, channel, role, payload.event_type)
+        helpers.role_log(
+            user, payload.emoji, channel, role, payload.event_type, logger=self.logger
+        )
 
         if action == "add":
             await user.add_roles(role)
