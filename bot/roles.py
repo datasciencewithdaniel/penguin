@@ -5,8 +5,9 @@ import discord
 from discord import RawReactionActionEvent
 from bot import helpers
 
-REACT_ID = 0
-WELCOME = 851436058172194851
+REACT_ID = 0  # 883340591742726194
+WELCOME = 851436058172194851  # 851074616947769354
+BOT_ADMIN = 883346863326117888
 
 
 class roles(commands.Cog):
@@ -43,6 +44,8 @@ class roles(commands.Cog):
 
     async def reaction_edits(self, payload, action="remove"):
         channel = self.bot.get_channel(payload.channel_id)
+        if channel == self.bot.get_channel(BOT_ADMIN):
+            pass  # CHECK IF STREAM IS HAPPENING
         if channel != self.bot.get_channel(WELCOME):
             return False
 

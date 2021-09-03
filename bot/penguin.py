@@ -1,4 +1,3 @@
-from bot.background import background
 import os
 from dotenv import load_dotenv
 import discord
