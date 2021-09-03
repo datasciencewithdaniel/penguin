@@ -1,37 +1,58 @@
 from discord.ext import commands
 from discord.utils import get
 import unicodedata
+import discord
 from discord import RawReactionActionEvent
 from bot import helpers
 
+REACT_ID = 0
+WELCOME = 851436058172194851
+
 
 class roles(commands.Cog):
-    def __init__(self, bot, logger):
+    def __init__(self, bot, GUILD, logger):
         self.bot = bot
+        self.GUILD = GUILD
         self.logger = logger
 
     @commands.Cog.listener()
     async def on_ready(self):
-        channel = self.bot.get_channel(851436058172194851)
-        message = await channel.send("test reaction roles")
+        guild = discord.utils.get(self.bot.guilds, name=self.GUILD)
+        channel = self.bot.get_channel(WELCOME)
+
+        message = await channel.fetch_message(channel.last_message_id)
+        if message.id == REACT_ID:
+            return False
+
+        embed = discord.Embed(
+            title="Reaction Roles",
+            url="https://www.datasciencewithdaniel.com.au",
+            description=f"""
+                React to this messgage to get your roles!\n
+                {helpers.find_emoji("SNAKE")} {get(guild.roles, name="Developer").mention} - if you want to write code and contribute to projects\n
+                {helpers.find_emoji("OCTOPUS")} {get(guild.roles, name="Observer").mention} - if you are happy to watch and attend events to learn\n
+                {helpers.find_emoji("PENGUIN")} {get(guild.roles, name="Bot-Admin").mention} - if you want to be part of managing the Penguin Bot\n
+                """,
+            color=0xB4E4F9,
+        )
+        message = await channel.send(embed=embed)
+
         await message.add_reaction(emoji=helpers.find_emoji("SNAKE"))
         await message.add_reaction(emoji=helpers.find_emoji("OCTOPUS"))
         await message.add_reaction(emoji=helpers.find_emoji("PENGUIN"))
-        await message.add_reaction(emoji=helpers.find_emoji("SPOUTING WHALE"))
 
     async def reaction_edits(self, payload, action="remove"):
-        channel = self.bot.get_channel(
-            payload.channel_id
-        )  # IMPORTANT - WELCOME CHANNEL ONLY
+        channel = self.bot.get_channel(payload.channel_id)
+        if channel != self.bot.get_channel(WELCOME):
+            return False
 
-        # https://discord.com/channels/851059417562742854/851074616947769354/851452116799062026
-        if channel != self.bot.get_channel(851074616947769354):
+        if payload.message_id != REACT_ID:
             return False
 
         reactions = [
             "SNAKE",  # DEVELOPER
             "OCTOPUS",  # OBSERVER
-            "PENGUIN",
+            "PENGUIN",  # BOT-ADMIN
             "SPOUTING WHALE",
             "MAMMOTH",
         ]
@@ -47,7 +68,7 @@ class roles(commands.Cog):
         elif emoji == "OCTOPUS":
             role = get(guild.roles, name="Observer")
         elif emoji == "PENGUIN":
-            role = get(guild.roles, name="bot-testing")
+            role = get(guild.roles, name="Bot-Admin")
 
         helpers.role_log(
             user, payload.emoji, channel, role, payload.event_type, logger=self.logger
