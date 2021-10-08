@@ -15,3 +15,7 @@ def role_log(user, emoji, channel, role, action, logger):
 
 def find_emoji(name):
     return lookup(name.replace("_", " "))
+
+
+# def get_user_mention(username):
+#     return username

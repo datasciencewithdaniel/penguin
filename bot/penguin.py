@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 import logging
 
-from bot import admin, notifications, responses, roles, background
+from bot import admin, notifications, responses, roles, tutoring
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -24,6 +24,7 @@ bot.add_cog(admin.admin(bot, GUILD, logger))
 bot.add_cog(notifications.notifications(bot, logger))
 bot.add_cog(responses.responses(bot, logger))
 bot.add_cog(roles.roles(bot, GUILD, logger))
+bot.add_cog(tutoring.tutoring(bot, GUILD, logger))
 # bot.add_cog(background.background(bot))
 
 
