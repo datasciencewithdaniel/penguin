@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nohup python -m bot.penguin &
+"nohup python -m bot.penguin &"

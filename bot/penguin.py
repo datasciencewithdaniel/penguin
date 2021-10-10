@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 import logging
 
-from bot import admin, notifications, responses, roles, tutoring
+from bot import admin, notifications, responses, roles  # , tutoring
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
