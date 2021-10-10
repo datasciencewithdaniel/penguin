@@ -24,7 +24,7 @@ bot.add_cog(admin.admin(bot, GUILD, logger))
 bot.add_cog(notifications.notifications(bot, logger))
 bot.add_cog(responses.responses(bot, logger))
 bot.add_cog(roles.roles(bot, GUILD, logger))
-bot.add_cog(tutoring.tutoring(bot, GUILD, logger))
+# bot.add_cog(tutoring.tutoring(bot, GUILD, logger))
 # bot.add_cog(background.background(bot))
 
 
