@@ -21,11 +21,13 @@ class tutoring(commands.Cog):
         self.resource = self.session.resource("dynamodb")
         self.table = self.resource.Table("tutoring-base")
         self.languages = ["Python", "SQL", "Java", "JavaScript", "R"]
+        self.tutoring_channel_raw = 890976909054320681
+        self.tutor_admin_channel_raw = 895262367112384522
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.tutoring_channel = self.bot.get_channel(890976909054320681)
-        self.tutor_admin_channel = self.bot.get_channel(895262367112384522)
+        self.tutoring_channel = self.bot.get_channel(self.tutoring_channel_raw)
+        self.tutor_admin_channel = self.bot.get_channel(self.tutor_admin_channel_raw)
         self.bot.loop.create_task(self.scan_table())
         self.members = {
             member.name: member.id
@@ -56,18 +58,21 @@ class tutoring(commands.Cog):
         return True
 
     async def post_new_tutoring(self, tutee, tags):
+        try:
+            price = f"Asking Price: {tutee['tuteePrice']}\n"
+        except KeyError:
+            price = ""
         req_languages = f"Requested Langauge/s: {' - '.join([lang for lang in self.languages if tutee[lang]])}"
         embed = discord.Embed(
             title="Tutoring Request",
             url="https://www.datasciencewithdaniel.com.au/tutoring.html",
             description=f"""
                 React to this message to accept or decline a tutoring request from {tutee['username']}! Please only accept the request if no one else already has.\n
-                {req_languages}\n
+                {req_languages}\n{price}
                 {helpers.find_emoji(YES)} - if you would like to accept this tutoring request\n
                 {helpers.find_emoji(NO)} - if you would like to decline this tutoring request\n
                 Please send {tutee['username']} a message if you accept their tutoring request to arrange the details.\n
-                Tutoring Reason:\n
-                {tutee['reason']}\n
+                Tutoring Reason:\n{tutee['reason']}\n
                 """,
             color=0xB4E4F9,
         )
@@ -123,8 +128,7 @@ class tutoring(commands.Cog):
                 React to this message to accept or decline a tutor request from {tutor['username']}!\n
                 {helpers.find_emoji(YES)} - if you would like to accept this tutor request\n
                 {helpers.find_emoji(NO)} - if you would like to decline this tutor request\n
-                Tutor Justification:\n
-                {tutor['justification']}\n
+                Tutor Justification:\n{tutor['justification']}\n
                 """,
             color=0xB4E4F9,
         )
@@ -135,15 +139,14 @@ class tutoring(commands.Cog):
 
     async def reaction_edits(self, payload):
         channel = self.bot.get_channel(payload.channel_id)
-        # if channel != self.tutor_admin_channel or channel != self.tutoring_channel:
-        #     print(1)
-        #     return False
         if channel == self.tutor_admin_channel:
             embed_field = "tutorComplete"
             tutor = "N/A"
         elif channel == self.tutoring_channel:
             embed_field = "tuteeComplete"
             tutor = payload.member.name
+        else:
+            return False
 
         guild = self.bot.get_guild(payload.guild_id)
         user = guild.get_member(payload.user_id)

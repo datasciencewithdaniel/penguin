@@ -1,4 +1,4 @@
-from os import name
+# from os import name
 from discord.ext import commands
 from bot import helpers
 
