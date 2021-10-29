@@ -19,8 +19,9 @@ class tutoring(commands.Cog):
         self.logger = logger
         self.session = boto3.session.Session(profile_name="dswd")
         self.resource = self.session.resource("dynamodb")
-        self.table = self.resource.Table("tutoring-base")
-        self.languages = ["Python", "SQL", "Java", "JavaScript", "R"]
+        self.tablename = "tutoring-dev"
+        self.table = self.resource.Table(self.tablename)
+        self.languages = ["Python", "SQL", "Java", "JavaScript"]
         self.tutoring_channel_raw = 890976909054320681
         self.tutor_admin_channel_raw = 895262367112384522
 
@@ -46,7 +47,7 @@ class tutoring(commands.Cog):
 
     async def validate_tutees(self):
         tutee_response = self.table.scan(
-            TableName="tutoring-base",
+            TableName=self.tablename,
             FilterExpression=Attr("tuteeValidation").eq(False) & Attr("tutee").eq(True),
         )["Items"]
         if len(tutee_response) == 0:
@@ -93,7 +94,7 @@ class tutoring(commands.Cog):
 
     def find_tutors(self, tutee):
         avail_tutors = self.table.scan(
-            TableName="tutoring-base", FilterExpression=Attr("tutorComplete").eq(True)
+            TableName=self.tablename, FilterExpression=Attr("tutorComplete").eq(True)
         )["Items"]
         tutors = []
         for tutor in avail_tutors:
@@ -110,7 +111,7 @@ class tutoring(commands.Cog):
 
     async def validate_tutors(self):
         tutor_response = self.table.scan(
-            TableName="tutoring-base",
+            TableName=self.tablename,
             FilterExpression=Attr("tutorValidation").eq(False) & Attr("tutor").eq(True),
         )["Items"]
         if len(tutor_response) == 0:
@@ -160,7 +161,7 @@ class tutoring(commands.Cog):
             return False
 
         entry = self.table.scan(
-            TableName="tutoring-base",
+            TableName=self.tablename,
             FilterExpression=Attr(embed_field[:5] + "_message_id").eq(
                 payload.message_id
             )
@@ -189,6 +190,16 @@ class tutoring(commands.Cog):
                     payload.event_type,
                     logger=self.logger,
                 )
+            elif embed_field == "tuteeComplete":
+                await self.send_tutee_dm(payload, entry)
+
+    async def send_tutee_dm(self, user, entry):
+        tutee = self.bot.get_user(entry[0]["userID"])
+        author = user.member.nick if user.member.nick is not None else user.member.name
+        await tutee.create_dm()
+        await tutee.dm_channel.send(
+            f"{author} has accepted your tutoring request and will be reaching out to you!"
+        )
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: RawReactionActionEvent):

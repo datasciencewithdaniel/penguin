@@ -4,10 +4,15 @@ import discord
 from discord.ext import commands
 import logging
 
-from bot import admin, notifications, responses, roles, tutoring
+from bot import admin, notifications, responses, roles, tutoring, tutoring_commands
+
+BOT = "BabyPenguin"  # Penguin
 
 load_dotenv()
-TOKEN = os.getenv("DISCORD_TOKEN")
+if BOT == "BabyPenguin":
+    TOKEN = os.getenv("DISCORD_TOKEN2")
+else:
+    TOKEN = os.getenv("DISCORD_TOKEN")
 GUILD = os.getenv("DISCORD_GUILD")
 
 logger = logging.getLogger("discord")
@@ -18,13 +23,17 @@ handler.setFormatter(
 )
 logger.addHandler(handler)
 
-bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
+if BOT == "BabyPenguin":
+    bot = commands.Bot(command_prefix=",", intents=discord.Intents.all())
+else:
+    bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 
 bot.add_cog(admin.admin(bot, GUILD, logger))
 bot.add_cog(notifications.notifications(bot, logger))
 bot.add_cog(responses.responses(bot, logger))
 bot.add_cog(roles.roles(bot, GUILD, logger))
 bot.add_cog(tutoring.tutoring(bot, GUILD, logger))
+bot.add_cog(tutoring_commands.tutoring_commands(bot, logger))
 # bot.add_cog(background.background(bot))
 
 
