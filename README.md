@@ -6,6 +6,7 @@ Current functionality:
 - Message Replies (responses)
 - Reaction Roles (roles)
 - Welcome Message (notifications)
+- Tutoring Support (tutoring)
 
 Future Functionality:
 - Twitch Stream Notification (background)
