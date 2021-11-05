@@ -5,12 +5,12 @@ from bot import helpers
 
 
 class tutoring_commands(commands.Cog):
-    def __init__(self, bot, logger):
+    def __init__(self, bot, table, logger):
         self.bot = bot
         self.logger = logger
         self.session = boto3.session.Session(profile_name="dswd")
         self.resource = self.session.resource("dynamodb")
-        self.tablename = "tutoring-dev"
+        self.tablename = table
         self.table = self.resource.Table(self.tablename)
 
     @commands.command(name="recommend", help="Give your tutor a recommendation")
