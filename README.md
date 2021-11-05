@@ -16,3 +16,9 @@ To run a local version of the bot:
 ```
 python -m bot.python
 ```
+
+## To Find and Kill the Process
+```
+ sudo ps -U ubuntu
+ kill [PID]
+```
