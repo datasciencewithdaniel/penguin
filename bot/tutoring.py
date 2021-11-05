@@ -19,8 +19,9 @@ class tutoring(commands.Cog):
         self.logger = logger
         self.session = boto3.session.Session(profile_name="dswd")
         self.resource = self.session.resource("dynamodb")
-        self.table = self.resource.Table("tutoring-base")
-        self.languages = ["Python", "SQL", "Java", "JavaScript", "R"]
+        self.tablename = "tutoring-dev"
+        self.table = self.resource.Table(self.tablename)
+        self.languages = ["Python", "SQL", "Java", "JavaScript"]
         self.tutoring_channel_raw = 890976909054320681
         self.tutor_admin_channel_raw = 895262367112384522
 
@@ -46,15 +47,16 @@ class tutoring(commands.Cog):
 
     async def validate_tutees(self):
         tutee_response = self.table.scan(
-            TableName="tutoring-base",
+            TableName=self.tablename,
             FilterExpression=Attr("tuteeValidation").eq(False) & Attr("tutee").eq(True),
         )["Items"]
         if len(tutee_response) == 0:
             return False
         for tutee in tutee_response:
-            tags = self.find_tutors(tutee)
+            tags, tags_list = self.find_tutors(tutee)
             message = await self.post_new_tutoring(tutee, tags)
-            self.complete_validation(tutee, message, field="tuteeValidation")
+            await self.complete_validation(tutee, message, field="tuteeValidation")
+            await self.message_member(tutee, tags_list, "tutee")
         return True
 
     async def post_new_tutoring(self, tutee, tags):
@@ -81,7 +83,7 @@ class tutoring(commands.Cog):
         await message.add_reaction(emoji=helpers.find_emoji(NO))
         return message
 
-    def complete_validation(self, tut, message, field):
+    async def complete_validation(self, tut, message, field):
         tut[field] = True
         tut[field[:5] + "_message_id"] = message.id
         try:
@@ -93,7 +95,7 @@ class tutoring(commands.Cog):
 
     def find_tutors(self, tutee):
         avail_tutors = self.table.scan(
-            TableName="tutoring-base", FilterExpression=Attr("tutorComplete").eq(True)
+            TableName=self.tablename, FilterExpression=Attr("tutorComplete").eq(True)
         )["Items"]
         tutors = []
         for tutor in avail_tutors:
@@ -104,20 +106,52 @@ class tutoring(commands.Cog):
         for tutor in tutors:
             if tutor in list(self.members.keys()):
                 tutor_mentioned.append(f"<@{self.members[tutor]}>")
-        tutor_mentioned = " ".join(tutor_mentioned)
-        tags = f"Matching Tutors: {tutor_mentioned}"
-        return tags
+        tutor_mentioned_s = " ".join(tutor_mentioned)
+        tags = f"Matching Tutors: {tutor_mentioned_s}"
+        return tags, tutor_mentioned
+
+    async def message_member(self, member, tags_list, member_type):
+        user = False
+        for mem in self.members.keys():
+            if mem == member["username"]:
+                user = self.bot.get_user(self.members[mem])
+
+        if member_type == "tutee":
+            template1 = "Your tutoring request has been posted to the Data Science with Daniel tutoring channel! "
+            template2 = f"There are currently {len(tags_list)} tutor that matches your request. "
+            template3 = (
+                f"There are currently {len(tags_list)} tutors that match your request. "
+            )
+            if len(tags_list) == 0:
+                template3 = (
+                    template3
+                    + "Your request will still be reviewed to see if there is anyone that can help out"
+                )
+        elif member_type == "tutor":
+            template1 = "Your tutor request has been posted to the Data Science with Daniel tutoring admin channel! "
+            template2 = ""
+            template3 = "Look out for a message from the team to verify you as a tutor."
+
+        if user and len(tags_list) == 1:
+            await user.create_dm()
+            await user.dm_channel.send(template1 + template2)
+        elif user and len(tags_list) != 1:
+            await user.create_dm()
+            await user.dm_channel.send(template1 + template3)
+
+        return True
 
     async def validate_tutors(self):
         tutor_response = self.table.scan(
-            TableName="tutoring-base",
+            TableName=self.tablename,
             FilterExpression=Attr("tutorValidation").eq(False) & Attr("tutor").eq(True),
         )["Items"]
         if len(tutor_response) == 0:
             return False
         for tutor in tutor_response:
             message = await self.post_new_tutor(tutor)
-            self.complete_validation(tutor, message, field="tutorValidation")
+            await self.complete_validation(tutor, message, field="tutorValidation")
+            await self.message_member(tutor, [], "tutor")
         return True
 
     async def post_new_tutor(self, tutor):
@@ -160,7 +194,7 @@ class tutoring(commands.Cog):
             return False
 
         entry = self.table.scan(
-            TableName="tutoring-base",
+            TableName=self.tablename,
             FilterExpression=Attr(embed_field[:5] + "_message_id").eq(
                 payload.message_id
             )
@@ -189,6 +223,16 @@ class tutoring(commands.Cog):
                     payload.event_type,
                     logger=self.logger,
                 )
+            elif embed_field == "tuteeComplete":
+                await self.send_tutee_dm(payload, entry)
+
+    async def send_tutee_dm(self, user, entry):
+        tutee = self.bot.get_user(entry[0]["userID"])
+        author = user.member.nick if user.member.nick is not None else user.member.name
+        await tutee.create_dm()
+        await tutee.dm_channel.send(
+            f"{author} has accepted your tutoring request and will be reaching out to you!"
+        )
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: RawReactionActionEvent):
