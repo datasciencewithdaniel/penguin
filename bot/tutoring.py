@@ -13,13 +13,13 @@ NO = "LARGE RED CIRCLE"
 
 
 class tutoring(commands.Cog):
-    def __init__(self, bot, GUILD, logger):
+    def __init__(self, bot, GUILD_ID, table, logger):
         self.bot = bot
-        self.GUILD = GUILD
+        self.GUILD_ID = GUILD_ID
         self.logger = logger
         self.session = boto3.session.Session(profile_name="dswd")
         self.resource = self.session.resource("dynamodb")
-        self.tablename = "tutoring-dev"
+        self.tablename = table
         self.table = self.resource.Table(self.tablename)
         self.languages = ["Python", "SQL", "Java", "JavaScript"]
         self.tutoring_channel_raw = 890976909054320681
@@ -27,15 +27,10 @@ class tutoring(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        self.guild = discord.utils.get(self.bot.guilds, name=self.GUILD_ID)
         self.tutoring_channel = self.bot.get_channel(self.tutoring_channel_raw)
         self.tutor_admin_channel = self.bot.get_channel(self.tutor_admin_channel_raw)
         self.bot.loop.create_task(self.scan_table())
-        self.members = {
-            member.name: member.id
-            for guild in self.bot.guilds
-            for member in guild.members
-            if guild.name == "Data Science with Daniel"
-        }
 
     async def scan_table(self, tutees=True, tutors=True):
         while True:
@@ -60,6 +55,7 @@ class tutoring(commands.Cog):
         return True
 
     async def post_new_tutoring(self, tutee, tags):
+        user = self.guild.get_member_named(tutee["username"])
         try:
             price = f"Asking Price: {tutee['tuteePrice']}\n"
         except KeyError:
@@ -69,11 +65,11 @@ class tutoring(commands.Cog):
             title="Tutoring Request",
             url="https://www.datasciencewithdaniel.com.au/tutoring.html",
             description=f"""
-                React to this message to accept or decline a tutoring request from {tutee['username']}! Please only accept the request if no one else already has.\n
+                React to this message to accept or decline a tutoring request from {user.display_name}! Please only accept the request if no one else already has.\n
                 {req_languages}\n{price}
                 {helpers.find_emoji(YES)} - if you would like to accept this tutoring request\n
                 {helpers.find_emoji(NO)} - if you would like to decline this tutoring request\n
-                Please send {tutee['username']} a message if you accept their tutoring request to arrange the details.\n
+                Please send {user.display_name} a message if you accept their tutoring request to arrange the details.\n
                 Tutoring Reason:\n{tutee['reason']}\n
                 """,
             color=0xB4E4F9,
@@ -87,7 +83,7 @@ class tutoring(commands.Cog):
         tut[field] = True
         tut[field[:5] + "_message_id"] = message.id
         try:
-            tut["userID"] = self.members[tut["username"]]
+            tut["userID"] = self.guild.get_member_named(tut["username"]).id
         except KeyError:
             pass
         self.table.put_item(Item=tut)
@@ -104,21 +100,21 @@ class tutoring(commands.Cog):
                     tutors.append(tutor["username"])
         tutor_mentioned = []
         for tutor in tutors:
-            if tutor in list(self.members.keys()):
-                tutor_mentioned.append(f"<@{self.members[tutor]}>")
+            tutor_check = self.guild.get_member_named(tutor)
+            if tutor_check:
+                tutor_mentioned.append(f"<@{tutor_check.id}>")
         tutor_mentioned_s = " ".join(tutor_mentioned)
         tags = f"Matching Tutors: {tutor_mentioned_s}"
         return tags, tutor_mentioned
 
     async def message_member(self, member, tags_list, member_type):
-        user = False
-        for mem in self.members.keys():
-            if mem == member["username"]:
-                user = self.bot.get_user(self.members[mem])
+        user = self.guild.get_member_named(member["username"])
 
         if member_type == "tutee":
             template1 = "Your tutoring request has been posted to the Data Science with Daniel tutoring channel! "
-            template2 = f"There are currently {len(tags_list)} tutor that matches your request. "
+            template2 = (
+                f"There is currently {len(tags_list)} tutor that matches your request. "
+            )
             template3 = (
                 f"There are currently {len(tags_list)} tutors that match your request. "
             )
@@ -155,11 +151,12 @@ class tutoring(commands.Cog):
         return True
 
     async def post_new_tutor(self, tutor):
+        user = self.guild.get_member_named(tutor["username"])
         embed = discord.Embed(
             title="Tutor Request",
             url="https://www.datasciencewithdaniel.com.au/tutoring.html",
             description=f"""
-                React to this message to accept or decline a tutor request from {tutor['username']}!\n
+                React to this message to accept or decline a tutor request from {user.display_name}!\n
                 {helpers.find_emoji(YES)} - if you would like to accept this tutor request\n
                 {helpers.find_emoji(NO)} - if you would like to decline this tutor request\n
                 Tutor Justification:\n{tutor['justification']}\n

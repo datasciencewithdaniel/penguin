@@ -11,14 +11,14 @@ BOT_ADMIN = 883346863326117888
 
 
 class roles(commands.Cog):
-    def __init__(self, bot, GUILD, logger):
+    def __init__(self, bot, GUILD_ID, logger):
         self.bot = bot
-        self.GUILD = GUILD
+        self.GUILD_ID = GUILD_ID
         self.logger = logger
 
     @commands.Cog.listener()
     async def on_ready(self):
-        guild = discord.utils.get(self.bot.guilds, name=self.GUILD)
+        guild = discord.utils.get(self.bot.guilds, name=self.GUILD_ID)
         channel = self.bot.get_channel(WELCOME)
 
         message = await channel.fetch_message(channel.last_message_id)

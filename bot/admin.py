@@ -3,14 +3,14 @@ from discord.ext import commands
 
 
 class admin(commands.Cog):
-    def __init__(self, bot, GUILD, logger):
+    def __init__(self, bot, GUILD_ID, logger):
         self.bot = bot
-        self.GUILD = GUILD
+        self.GUILD_ID = GUILD_ID
         self.logger = logger
 
     @commands.Cog.listener()
     async def on_ready(self):
-        guild = discord.utils.get(self.bot.guilds, name=self.GUILD)
+        guild = discord.utils.get(self.bot.guilds, name=self.GUILD_ID)
         text_list = [
             "|" + "-" * 104 + "|",
             f"| {str(self.bot.user):^102} |",

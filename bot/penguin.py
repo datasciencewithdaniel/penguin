@@ -4,16 +4,18 @@ import discord
 from discord.ext import commands
 import logging
 
-from bot import admin, notifications, responses, roles, tutoring, tutoring_commands
+from bot import admin, notifications, responses, roles, tutoring  # , tutoring_commands
 
-BOT = "BabyPenguin"  # Penguin
+BOT = "Penguin"  # "BabyPenguin"
 
 load_dotenv()
 if BOT == "BabyPenguin":
     TOKEN = os.getenv("DISCORD_TOKEN2")
+    table = "tutoring-dev"
 else:
     TOKEN = os.getenv("DISCORD_TOKEN")
-GUILD = os.getenv("DISCORD_GUILD")
+    table = "tutoring-base"
+GUILD_ID = os.getenv("DISCORD_GUILD")
 
 logger = logging.getLogger("discord")
 logger.setLevel(logging.INFO)
@@ -28,12 +30,12 @@ if BOT == "BabyPenguin":
 else:
     bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 
-bot.add_cog(admin.admin(bot, GUILD, logger))
+bot.add_cog(admin.admin(bot, GUILD_ID, logger))
 bot.add_cog(notifications.notifications(bot, logger))
 bot.add_cog(responses.responses(bot, logger))
-bot.add_cog(roles.roles(bot, GUILD, logger))
-bot.add_cog(tutoring.tutoring(bot, GUILD, logger))
-bot.add_cog(tutoring_commands.tutoring_commands(bot, logger))
+bot.add_cog(roles.roles(bot, GUILD_ID, logger))
+bot.add_cog(tutoring.tutoring(bot, GUILD_ID, table, logger))
+# bot.add_cog(tutoring_commands.tutoring_commands(bot, table, logger))
 # bot.add_cog(background.background(bot))
 
 
