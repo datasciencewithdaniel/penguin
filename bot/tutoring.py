@@ -53,9 +53,10 @@ class tutoring(commands.Cog):
         if len(tutee_response) == 0:
             return False
         for tutee in tutee_response:
-            tags = self.find_tutors(tutee)
+            tags, tags_list = self.find_tutors(tutee)
             message = await self.post_new_tutoring(tutee, tags)
-            self.complete_validation(tutee, message, field="tuteeValidation")
+            await self.complete_validation(tutee, message, field="tuteeValidation")
+            await self.message_member(tutee, tags_list, "tutee")
         return True
 
     async def post_new_tutoring(self, tutee, tags):
@@ -82,7 +83,7 @@ class tutoring(commands.Cog):
         await message.add_reaction(emoji=helpers.find_emoji(NO))
         return message
 
-    def complete_validation(self, tut, message, field):
+    async def complete_validation(self, tut, message, field):
         tut[field] = True
         tut[field[:5] + "_message_id"] = message.id
         try:
@@ -105,9 +106,40 @@ class tutoring(commands.Cog):
         for tutor in tutors:
             if tutor in list(self.members.keys()):
                 tutor_mentioned.append(f"<@{self.members[tutor]}>")
-        tutor_mentioned = " ".join(tutor_mentioned)
-        tags = f"Matching Tutors: {tutor_mentioned}"
-        return tags
+        tutor_mentioned_s = " ".join(tutor_mentioned)
+        tags = f"Matching Tutors: {tutor_mentioned_s}"
+        return tags, tutor_mentioned
+
+    async def message_member(self, member, tags_list, member_type):
+        user = False
+        for mem in self.members.keys():
+            if mem == member["username"]:
+                user = self.bot.get_user(self.members[mem])
+
+        if member_type == "tutee":
+            template1 = "Your tutoring request has been posted to the Data Science with Daniel tutoring channel! "
+            template2 = f"There are currently {len(tags_list)} tutor that matches your request. "
+            template3 = (
+                f"There are currently {len(tags_list)} tutors that match your request. "
+            )
+            if len(tags_list) == 0:
+                template3 = (
+                    template3
+                    + "Your request will still be reviewed to see if there is anyone that can help out"
+                )
+        elif member_type == "tutor":
+            template1 = "Your tutor request has been posted to the Data Science with Daniel tutoring admin channel! "
+            template2 = ""
+            template3 = "Look out for a message from the team to verify you as a tutor."
+
+        if user and len(tags_list) == 1:
+            await user.create_dm()
+            await user.dm_channel.send(template1 + template2)
+        elif user and len(tags_list) != 1:
+            await user.create_dm()
+            await user.dm_channel.send(template1 + template3)
+
+        return True
 
     async def validate_tutors(self):
         tutor_response = self.table.scan(
@@ -118,7 +150,8 @@ class tutoring(commands.Cog):
             return False
         for tutor in tutor_response:
             message = await self.post_new_tutor(tutor)
-            self.complete_validation(tutor, message, field="tutorValidation")
+            await self.complete_validation(tutor, message, field="tutorValidation")
+            await self.message_member(tutor, [], "tutor")
         return True
 
     async def post_new_tutor(self, tutor):
