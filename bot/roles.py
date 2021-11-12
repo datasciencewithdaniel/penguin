@@ -12,9 +12,9 @@ class roles(commands.Cog):
         self.GUILD_ID = GUILD_ID
         self.logger = logger
         self.WELCOME_ID = 851074616947769354
-        self.BANNER_ID = 1
-        self.TEXT_ID = 1
-        self.REACT_ID = 883340591742726194
+        self.BANNER_ID = 908721551535403078
+        self.TEXT_ID = 908721553229889577
+        self.REACT_ID = 908721554551099462
         self.reactions = [
             "SNAKE",  # DEVELOPER
             "OCTOPUS",  # OBSERVER

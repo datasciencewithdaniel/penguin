@@ -14,7 +14,7 @@ from bot import (
 )  # , tutoring_commands
 
 MYBOTS = ["Penguin", "BabyPenguin"]
-BOT = MYBOTS[1]
+BOT = MYBOTS[0]
 
 load_dotenv()
 if BOT == "BabyPenguin":
