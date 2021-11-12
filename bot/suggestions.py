@@ -13,7 +13,7 @@ class suggestions(commands.Cog):
         self.logger = logger
         self.SUGGEST_ID = 908640577640345631
         self.REQUEST_ID = 908652396786376734
-        self.MESSAGE_ID = 1
+        self.MESSAGE_ID = 908722060254138388
         self.reactions = ["LARGE GREEN CIRCLE", "LARGE RED CIRCLE"]
 
     @commands.command(
