@@ -4,9 +4,17 @@ import discord
 from discord.ext import commands
 import logging
 
-from bot import admin, notifications, responses, roles, tutoring  # , tutoring_commands
+from bot import (
+    admin,
+    notifications,
+    responses,
+    roles,
+    tutoring,
+    suggestions,
+)  # , tutoring_commands
 
-BOT = "Penguin"  # "BabyPenguin"
+MYBOTS = ["Penguin", "BabyPenguin"]
+BOT = MYBOTS[1]
 
 load_dotenv()
 if BOT == "BabyPenguin":
@@ -35,6 +43,7 @@ bot.add_cog(notifications.notifications(bot, logger))
 bot.add_cog(responses.responses(bot, logger))
 bot.add_cog(roles.roles(bot, GUILD_ID, logger))
 bot.add_cog(tutoring.tutoring(bot, GUILD_ID, table, logger))
+bot.add_cog(suggestions.suggestions(bot, GUILD_ID, logger))
 # bot.add_cog(tutoring_commands.tutoring_commands(bot, table, logger))
 # bot.add_cog(background.background(bot))
 

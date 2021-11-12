@@ -5,73 +5,51 @@ import discord
 from discord import RawReactionActionEvent
 from bot import helpers
 
-REACT_ID = 883340591742726194
-WELCOME = 851074616947769354
-BOT_ADMIN = 883346863326117888
-
 
 class roles(commands.Cog):
     def __init__(self, bot, GUILD_ID, logger):
         self.bot = bot
         self.GUILD_ID = GUILD_ID
         self.logger = logger
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        guild = discord.utils.get(self.bot.guilds, name=self.GUILD_ID)
-        channel = self.bot.get_channel(WELCOME)
-
-        message = await channel.fetch_message(channel.last_message_id)
-        if message.id == REACT_ID:
-            return False
-
-        embed = discord.Embed(
-            title="Reaction Roles",
-            url="https://www.datasciencewithdaniel.com.au",
-            description=f"""
-                React to this messgage to get your roles!\n
-                {helpers.find_emoji("SNAKE")} {get(guild.roles, name="Developer").mention} - if you want to write code and contribute to projects\n
-                {helpers.find_emoji("OCTOPUS")} {get(guild.roles, name="Observer").mention} - if you are happy to watch and attend events to learn\n
-                {helpers.find_emoji("PENGUIN")} {get(guild.roles, name="Bot-Admin").mention} - if you want to be part of managing the Penguin Bot\n
-                """,
-            color=0xB4E4F9,
-        )
-        message = await channel.send(embed=embed)
-
-        await message.add_reaction(emoji=helpers.find_emoji("SNAKE"))
-        await message.add_reaction(emoji=helpers.find_emoji("OCTOPUS"))
-        await message.add_reaction(emoji=helpers.find_emoji("PENGUIN"))
+        self.WELCOME_ID = 851074616947769354
+        self.BANNER_ID = 1
+        self.TEXT_ID = 1
+        self.REACT_ID = 883340591742726194
+        self.reactions = [
+            "SNAKE",  # DEVELOPER
+            "OCTOPUS",  # OBSERVER
+            "SPOUTING WHALE",  # BELUGA
+            "PENGUIN",  # PENGUIN
+            "SPIDER WEB",  # WEB
+            "MONKEY",  # SPACE
+        ]
 
     async def reaction_edits(self, payload, action="remove"):
         channel = self.bot.get_channel(payload.channel_id)
-        if channel == self.bot.get_channel(BOT_ADMIN):
-            pass  # CHECK IF STREAM IS HAPPENING
-        if channel != self.bot.get_channel(WELCOME):
+        if channel != self.bot.get_channel(self.WELCOME_ID):
             return False
 
-        if payload.message_id != REACT_ID:
+        if payload.message_id != self.REACT_ID:
             return False
-
-        reactions = [
-            "SNAKE",  # DEVELOPER
-            "OCTOPUS",  # OBSERVER
-            "PENGUIN",  # BOT-ADMIN
-            "SPOUTING WHALE",
-            "MAMMOTH",
-        ]
 
         guild = self.bot.get_guild(payload.guild_id)
         user = guild.get_member(payload.user_id)
         emoji = unicodedata.name(payload.emoji.name)
 
-        if user.name == "Penguin" or emoji not in reactions:
+        if user.name in ["Penguin", "BabyPenguin"] or emoji not in self.reactions:
             return False
         if emoji == "SNAKE":
             role = get(guild.roles, name="Developer")
         elif emoji == "OCTOPUS":
             role = get(guild.roles, name="Observer")
+        elif emoji == "SPOUTING WHALE":
+            role = get(guild.roles, name="Dev-Beluga")
         elif emoji == "PENGUIN":
-            role = get(guild.roles, name="Bot-Admin")
+            role = get(guild.roles, name="Dev-Penguin")
+        elif emoji == "SPIDER WEB":
+            role = get(guild.roles, name="Dev-Web")
+        elif emoji == "MONKEY":
+            role = get(guild.roles, name="Dev-Space")
 
         helpers.role_log(
             user, payload.emoji, channel, role, payload.event_type, logger=self.logger
@@ -89,3 +67,84 @@ class roles(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: RawReactionActionEvent):
         await self.reaction_edits(payload)
+
+    @commands.command(
+        name="update_welcome", help="Updates the embeds in the welcome channel [new]"
+    )
+    @commands.has_role("Administrator")
+    async def update_welcome(self, ctx, arg):
+
+        guild = discord.utils.get(self.bot.guilds, name=self.GUILD_ID)
+        channel = self.bot.get_channel(self.WELCOME_ID)
+
+        banner_embed = discord.Embed(
+            color=0xB4E4F9,
+        )
+        banner_embed.set_image(
+            url="https://datasciencewithdaniel.com.au/images/Banner.png"
+        )
+
+        text_embed = discord.Embed(
+            title="Welcome to Data Science with Daniel!",
+            description=f"""
+            We seek to build a community of Data Scientists, so that we can share our passion and learn together. We do this by bringing everything and everyone together in one place; Data Science with Daniel.\n
+            For Students; We support anyone on their Data Science journey by providing an environment where they can ask questions, find answers and connect with others.\n
+            For Industry; We engage with industry to understand the Data Science landscape and ensure that the next generation of Data Scientists develop the skills to succeed in their career.\n
+            For Academics; We promote studying Data Science to bring new people into the field and provide feedback to improve these studies.\n
+            By being part of this community you agree to be respectful and considerate of other members. Everyone is at a different stage of their Data Science learning journey, and this community is here to help and support everyone.\n
+            The announcements and events channels will be used to notify members of important information or when events are running, react to the roles below based on how you want to be notified.\n
+            We look forward to being part of your Data Science journey.
+            """,
+            color=0xB4E4F9,
+        )
+
+        roles_embed = discord.Embed(
+            title="Reaction Roles",
+            url="https://www.datasciencewithdaniel.com.au",
+            description=f"""
+                React to this messgage to get your roles!\n
+                {helpers.find_emoji("SNAKE")} {get(guild.roles, name="Developer").mention} - if you want to write code and contribute to any project\n
+                {helpers.find_emoji("OCTOPUS")} {get(guild.roles, name="Observer").mention} - if you are happy to watch and attend events to learn\n
+                {helpers.find_emoji("SPOUTING WHALE")} {get(guild.roles, name="Dev-Beluga").mention} - if you want to be part of developing the Beluga library\n
+                {helpers.find_emoji("PENGUIN")} {get(guild.roles, name="Dev-Penguin").mention} - if you want to be part of developing the Penguin bot\n
+                {helpers.find_emoji("SPIDER WEB")} {get(guild.roles, name="Dev-Web").mention} - if you want to be part of developing the website\n
+                {helpers.find_emoji("MONKEY")} {get(guild.roles, name="Dev-Space").mention} - if you want to be part of developing space data analysis\n
+                """,
+            color=0xB4E4F9,
+        )
+
+        if arg == "new":
+            await channel.send(embed=banner_embed)
+            await channel.send(embed=text_embed)
+            message = await channel.send(embed=roles_embed)
+        else:
+            message = await channel.fetch_message(self.BANNER_ID)
+            await message.edit(embed=banner_embed)
+
+            message = await channel.fetch_message(self.TEXT_ID)
+            await message.edit(embed=text_embed)
+
+            message = await channel.fetch_message(self.REACT_ID)
+            await message.edit(embed=roles_embed)
+
+        for emoji in self.reactions:
+            await message.add_reaction(emoji=helpers.find_emoji(emoji))
+
+    @commands.command(name="update_role_ids", help="Updates the role ids [var][id]")
+    @commands.has_role("Administrator")
+    async def update_role_ids(self, ctx, *args):
+        try:
+            id = int(args[1])
+        except ValueError:
+            return False
+
+        if args[0] == "WELCOME_ID":
+            self.WELCOME_ID = id
+        elif args[0] == "BANNER_ID":
+            self.BANNER_ID = id
+        elif args[0] == "TEXT_ID":
+            self.TEXT_ID = id
+        elif args[0] == "REACT_ID":
+            self.REACT_ID = id
+
+        helpers.command_log(ctx, logger=self.logger)
