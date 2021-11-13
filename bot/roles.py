@@ -11,7 +11,7 @@ class roles(commands.Cog):
         self.bot = bot
         self.GUILD_ID = GUILD_ID
         self.logger = logger
-        self.WELCOME_ID = 851436058172194851  # 851074616947769354
+        self.WELCOME_ID = 851074616947769354
         self.BANNER_ID = 908721551535403078
         self.TEXT_ID = 908721553229889577
         self.REACT_ID = 908721554551099462
@@ -129,6 +129,7 @@ class roles(commands.Cog):
 
             message = await channel.fetch_message(self.REACT_ID)
             await message.edit(embed=roles_embed)
+            await message.clear_reactions()
 
         for emoji in self.reactions:
             await message.add_reaction(emoji=helpers.find_emoji(emoji))

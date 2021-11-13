@@ -11,10 +11,12 @@ from bot import (
     roles,
     tutoring,
     suggestions,
+    coder,
+    todo,
 )  # , tutoring_commands
 
 MYBOTS = ["Penguin", "BabyPenguin"]
-BOT = MYBOTS[1]
+BOT = MYBOTS[0]
 
 load_dotenv()
 if BOT == "BabyPenguin":
@@ -44,6 +46,8 @@ bot.add_cog(responses.responses(bot, logger))
 bot.add_cog(roles.roles(bot, GUILD_ID, logger))
 bot.add_cog(tutoring.tutoring(bot, GUILD_ID, table, logger))
 bot.add_cog(suggestions.suggestions(bot, GUILD_ID, logger))
+bot.add_cog(coder.coder(bot, GUILD_ID, logger))
+bot.add_cog(todo.todo(bot, GUILD_ID, logger))
 # bot.add_cog(tutoring_commands.tutoring_commands(bot, table, logger))
 # bot.add_cog(background.background(bot))
 
