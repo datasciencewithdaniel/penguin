@@ -11,13 +11,14 @@ class roles(commands.Cog):
         self.bot = bot
         self.GUILD_ID = GUILD_ID
         self.logger = logger
-        self.WELCOME_ID = 851074616947769354
+        self.WELCOME_ID = 851436058172194851  # 851074616947769354
         self.BANNER_ID = 908721551535403078
         self.TEXT_ID = 908721553229889577
         self.REACT_ID = 908721554551099462
         self.reactions = [
             "SNAKE",  # DEVELOPER
             "OCTOPUS",  # OBSERVER
+            "OWL",  # CODER
             "SPOUTING WHALE",  # BELUGA
             "PENGUIN",  # PENGUIN
             "SPIDER WEB",  # WEB
@@ -42,6 +43,8 @@ class roles(commands.Cog):
             role = get(guild.roles, name="Developer")
         elif emoji == "OCTOPUS":
             role = get(guild.roles, name="Observer")
+        elif emoji == "OWL":
+            role = get(guild.roles, name="Coder")
         elif emoji == "SPOUTING WHALE":
             role = get(guild.roles, name="Dev-Beluga")
         elif emoji == "PENGUIN":
@@ -100,15 +103,15 @@ class roles(commands.Cog):
 
         roles_embed = discord.Embed(
             title="Reaction Roles",
-            url="https://www.datasciencewithdaniel.com.au",
             description=f"""
                 React to this messgage to get your roles!\n
                 {helpers.find_emoji("SNAKE")} {get(guild.roles, name="Developer").mention} - if you want to write code and contribute to any project\n
                 {helpers.find_emoji("OCTOPUS")} {get(guild.roles, name="Observer").mention} - if you are happy to watch and attend events to learn\n
+                {helpers.find_emoji("OWL")} {get(guild.roles, name="Coder").mention} - if you want to be invovled in coding challenges\n
                 {helpers.find_emoji("SPOUTING WHALE")} {get(guild.roles, name="Dev-Beluga").mention} - if you want to be part of developing the Beluga library\n
                 {helpers.find_emoji("PENGUIN")} {get(guild.roles, name="Dev-Penguin").mention} - if you want to be part of developing the Penguin bot\n
                 {helpers.find_emoji("SPIDER WEB")} {get(guild.roles, name="Dev-Web").mention} - if you want to be part of developing the website\n
-                {helpers.find_emoji("MONKEY")} {get(guild.roles, name="Dev-Space").mention} - if you want to be part of developing space data analysis\n
+                {helpers.find_emoji("MONKEY")} {get(guild.roles, name="Dev-Space").mention} - if you want to be part of analysing space data\n
                 """,
             color=0xB4E4F9,
         )
