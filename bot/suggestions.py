@@ -2,7 +2,6 @@ from discord.ext import commands
 import unicodedata
 import discord
 from discord import RawReactionActionEvent
-from collections.abc import Sequence
 from bot import helpers
 
 
