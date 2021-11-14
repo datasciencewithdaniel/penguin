@@ -24,11 +24,14 @@ class github(commands.Cog):
 
     @commands.command(
         name="issues",
-        help="Checks the open issues for the given repo [*args]",
+        help="Checks the open issues for the given repo",
     )
     async def issues(self, ctx):
         channel = self.bot.get_channel(ctx.channel.id)
         if ctx.channel.id not in list(self.CHANNEL_ID.keys()):
+            await ctx.send(
+                "You can only view the issues in the respective project channel"
+            )
             return False
         await ctx.message.delete()
 
