@@ -50,6 +50,7 @@ class github(commands.Cog):
                 issue_embed = discord.Embed(
                     title=f"Open Issue #{ele['number']} - {ele['title']} [{ele['repository_url'].split('/')[-1]}]",
                     description=f"{ele['body']}",
+                    url=f"{ele['html_url']}",
                     color=0xB4E4F9,
                 )
                 await channel.send(embed=issue_embed)
