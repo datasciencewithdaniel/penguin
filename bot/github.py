@@ -26,13 +26,13 @@ class github(commands.Cog):
         name="issues",
         help="Checks the open issues for the given repo [*args]",
     )
-    async def issues(self, ctx, args):
+    async def issues(self, ctx):
         channel = self.bot.get_channel(ctx.channel.id)
         if ctx.channel.id not in list(self.CHANNEL_ID.keys()):
             return False
         await ctx.message.delete()
 
-        repo = self.CHANNEL_ID[ctx.channel.id] if not args else args
+        repo = self.CHANNEL_ID[ctx.channel.id]
         command = f"""curl \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/datasciencewithdaniel/{repo}/issues
