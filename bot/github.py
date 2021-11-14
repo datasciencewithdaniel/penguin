@@ -24,7 +24,7 @@ class github(commands.Cog):
 
     @commands.command(
         name="issues",
-        help="Checks the open issues for the given repo [*args]",
+        help="Checks the open issues for the given repo",
     )
     async def issues(self, ctx):
         channel = self.bot.get_channel(ctx.channel.id)
