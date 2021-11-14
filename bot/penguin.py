@@ -14,6 +14,7 @@ from bot import (
     coder,
     todo,
     bn_interviews,
+    github,
 )  # , tutoring_commands
 
 
@@ -51,6 +52,7 @@ bot.add_cog(suggestions.suggestions(bot, GUILD_ID, logger))
 bot.add_cog(coder.coder(bot, GUILD_ID, logger))
 bot.add_cog(todo.todo(bot, GUILD_ID, logger))
 bot.add_cog(bn_interviews.bn_interviews(bot, GUILD_ID, logger))
+bot.add_cog(github.github(bot, GUILD_ID, logger))
 # bot.add_cog(tutoring_commands.tutoring_commands(bot, table, logger))
 # bot.add_cog(background.background(bot))
 
