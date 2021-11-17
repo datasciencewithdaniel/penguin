@@ -56,11 +56,9 @@ bot.add_cog(github.github(bot, GUILD_ID, logger))
 # bot.add_cog(tutoring_commands.tutoring_commands(bot, table, logger))
 # bot.add_cog(background.background(bot))
 
-
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send("You do not have the correct role for this command.")
-
 
 bot.run(TOKEN)

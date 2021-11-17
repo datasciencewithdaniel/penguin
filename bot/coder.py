@@ -25,6 +25,8 @@ class coder(commands.Cog):
         ):
             return False
 
+        content = "<@&908749408777158678>"
+
         challenge_embed = discord.Embed(
             title=f"New Challenge!",
             description=f"""
@@ -36,7 +38,7 @@ class coder(commands.Cog):
             color=0xB4E4F9,
         )
 
-        new_message = await channel.send(embed=challenge_embed)
+        new_message = await channel.send(content=content, embed=challenge_embed)
 
         await message.delete()
 

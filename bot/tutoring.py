@@ -160,9 +160,15 @@ class tutoring(commands.Cog):
                 {helpers.find_emoji(YES)} - if you would like to accept this tutor request\n
                 {helpers.find_emoji(NO)} - if you would like to decline this tutor request\n
                 Tutor Justification:\n{tutor['justification']}\n
+                Python:     {tutor['Python']:^10}{tutor['PythonExp']:^20}
+                SQL:        {tutor['SQL']:^10}{tutor['SQLExp']:^20}
+                Java:       {tutor['Java']:^10}{tutor['JavaExp']:^20}
+                JavaScript: {tutor['JavaScript']:^10}{tutor['JavaScriptExp']:^20}\n
                 """,
             color=0xB4E4F9,
         )
+        embed.set_footer(text=user.id)
+
         message = await self.tutor_admin_channel.send(embed=embed)
         await message.add_reaction(emoji=helpers.find_emoji(YES))
         await message.add_reaction(emoji=helpers.find_emoji(NO))
