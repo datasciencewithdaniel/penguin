@@ -19,7 +19,7 @@ from bot import (
 
 
 MYBOTS = ["Penguin", "BabyPenguin"]
-BOT = MYBOTS[0]
+BOT = MYBOTS[1]
 
 load_dotenv()
 if BOT == "BabyPenguin":
