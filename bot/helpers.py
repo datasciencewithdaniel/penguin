@@ -8,7 +8,7 @@ def command_log(ctx, logger):
 
 
 def role_log(user, emoji, channel, role, action, logger):
-    text = f"""| {str(user.name):^32} | {str(channel):^32} | {str(f'{emoji} - {role} - {action.split("_")[-1]}'):^32}|"""
+    text = f"""| {str(user.name):^32} | {str(channel):^31} | {str(f'{emoji} - {role} - {action.split("_")[-1]}'):^32}|"""
     print(text)
     logger.info(text)
 
