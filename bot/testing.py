@@ -14,3 +14,20 @@
 #         for _ in range(number_of_dice)
 #     ]
 #     await ctx.send(', '.join(dice))
+
+
+# from discord.ext import commands
+# from discord.utils import get
+# import unicodedata
+# import discord
+# from discord import RawReactionActionEvent
+# from bot import helpers
+
+
+# class testing(commands.Cog):
+#     def __init__(self, bot, GUILD_ID, logger):
+#         self.bot = bot
+#         self.GUILD_ID = GUILD_ID
+#         self.logger = logger
+
+

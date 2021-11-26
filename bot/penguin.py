@@ -15,6 +15,7 @@ from bot import (
     todo,
     bn_interviews,
     github,
+    testing
 )  # , tutoring_commands
 
 
@@ -55,6 +56,7 @@ bot.add_cog(bn_interviews.bn_interviews(bot, GUILD_ID, logger))
 bot.add_cog(github.github(bot, GUILD_ID, logger))
 # bot.add_cog(tutoring_commands.tutoring_commands(bot, table, logger))
 # bot.add_cog(background.background(bot))
+# bot.add_cog(testing.testing(bot, GUILD_ID, logger))
 
 @bot.event
 async def on_command_error(ctx, error):

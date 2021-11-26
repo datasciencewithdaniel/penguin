@@ -24,6 +24,10 @@ class roles(commands.Cog):
             "SPIDER WEB",  # WEB
             "MONKEY",  # SPACE
         ]
+        self.DEV_ID = 908646555408535562
+        self.CONSULT_ID = 908645981753585674
+        self.TUTOR_ID = 895262367112384522
+        self.BOT_ID = 883346863326117888
 
     async def reaction_edits(self, payload, action="remove"):
         channel = self.bot.get_channel(payload.channel_id)
@@ -152,3 +156,31 @@ class roles(commands.Cog):
             self.REACT_ID = id
 
         helpers.command_log(ctx, logger=self.logger)
+
+    @commands.command(name="admin_roles", help="Adds the respective Admin roles to the user [user][role*]")
+    @commands.has_role("Administrator")
+    async def admin_roles(self, ctx, *args):
+        channel = ctx.message.channel
+        guild = discord.utils.get(self.bot.guilds, name=self.GUILD_ID)
+        user = guild.get_member(int(args[0]))
+        helpers.command_log(ctx, logger=self.logger)
+        
+        roles = []
+        for role in args[1:]:
+            new_role = None
+            if channel.id == self.DEV_ID and role == "Developer-Admin":
+                new_role = get(guild.roles, name=role)
+            elif channel.id == self.CONSULT_ID and role == "Consult-Admin":
+                new_role = get(guild.roles, name=role)
+            elif channel.id == self.TUTOR_ID and role == "Tutor-Admin":
+                new_role = get(guild.roles, name=role)
+            elif channel.id == self.BOT_ID and role in ["Bot-Admin", "Crypto-Admin", "Coder-Admin"]:
+                new_role = get(guild.roles, name=role)
+            
+            if new_role:
+                roles.append(new_role)
+                await user.add_roles(new_role)
+
+        if len(roles) != len(args[1:]):
+            await channel.send("One or more of these roles cannot be added from this channel")
+                
