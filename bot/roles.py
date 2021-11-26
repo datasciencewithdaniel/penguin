@@ -164,17 +164,27 @@ class roles(commands.Cog):
         guild = discord.utils.get(self.bot.guilds, name=self.GUILD_ID)
         user = guild.get_member(int(args[0]))
         helpers.command_log(ctx, logger=self.logger)
+
+        potential_roles = [
+            "Developer-Admin",
+            "Consult-Admin",
+            "Tutor-Admin",
+            "Bot-Admin",
+            "Crypto-Admin",
+            "Coder-Admin"
+        ]
+
+        potential_channels = [
+            self.DEV_ID,
+            self.CONSULT_ID,
+            self.TUTOR_ID,
+            self.BOT_ID
+        ]
         
         roles = []
         for role in args[1:]:
             new_role = None
-            if channel.id == self.DEV_ID and role == "Developer-Admin":
-                new_role = get(guild.roles, name=role)
-            elif channel.id == self.CONSULT_ID and role == "Consult-Admin":
-                new_role = get(guild.roles, name=role)
-            elif channel.id == self.TUTOR_ID and role == "Tutor-Admin":
-                new_role = get(guild.roles, name=role)
-            elif channel.id == self.BOT_ID and role in ["Bot-Admin", "Crypto-Admin", "Coder-Admin"]:
+            if channel.id in potential_channels and role in potential_roles:
                 new_role = get(guild.roles, name=role)
             
             if new_role:
