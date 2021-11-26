@@ -2,7 +2,7 @@ from unicodedata import lookup
 
 
 def command_log(ctx, logger):
-    text = f"| {str(ctx.message.author.name):^32} | {str(ctx.message.channel):^32} | {str(ctx.command):^32} |"
+    text = f"| {str(ctx.message.author.name):^32} | {str(ctx.message.channel):^31} | {str(ctx.command):^32} |"
     print(text)
     logger.info(text)
 
