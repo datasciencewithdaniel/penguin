@@ -38,7 +38,7 @@ class tutoring(commands.Cog):
                 await self.validate_tutees()
             if tutors:
                 await self.validate_tutors()
-            await asyncio.sleep(1800)
+            await asyncio.sleep(28800)
 
     async def validate_tutees(self):
         tutee_response = self.table.scan(

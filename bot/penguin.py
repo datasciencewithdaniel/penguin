@@ -15,6 +15,7 @@ from bot import (
     todo,
     bn_interviews,
     github,
+    contact,
     testing
 )  # , tutoring_commands
 
@@ -25,10 +26,11 @@ BOT = MYBOTS[0]
 load_dotenv()
 if BOT == "BabyPenguin":
     TOKEN = os.getenv("DISCORD_TOKEN2")
-    table = "tutoring-dev"
+    tutor_table = "tutoring-dev"
 else:
     TOKEN = os.getenv("DISCORD_TOKEN")
-    table = "tutoring-base"
+    tutor_table = "tutoring-base"
+contact_table = "website-contact"
 GUILD_ID = os.getenv("DISCORD_GUILD")
 
 logger = logging.getLogger("discord")
@@ -48,12 +50,13 @@ bot.add_cog(admin.admin(bot, GUILD_ID, logger))
 bot.add_cog(notifications.notifications(bot, logger))
 bot.add_cog(responses.responses(bot, logger))
 bot.add_cog(roles.roles(bot, GUILD_ID, logger))
-bot.add_cog(tutoring.tutoring(bot, GUILD_ID, table, logger))
+bot.add_cog(tutoring.tutoring(bot, GUILD_ID, tutor_table, logger))
 bot.add_cog(suggestions.suggestions(bot, GUILD_ID, logger))
 bot.add_cog(coder.coder(bot, GUILD_ID, logger))
 bot.add_cog(todo.todo(bot, GUILD_ID, logger))
 bot.add_cog(bn_interviews.bn_interviews(bot, GUILD_ID, logger))
 bot.add_cog(github.github(bot, GUILD_ID, logger))
+bot.add_cog(contact.contact(bot, GUILD_ID, contact_table, logger))
 # bot.add_cog(tutoring_commands.tutoring_commands(bot, table, logger))
 # bot.add_cog(background.background(bot))
 # bot.add_cog(testing.testing(bot, GUILD_ID, logger))
