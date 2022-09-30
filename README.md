@@ -3,6 +3,7 @@
 Penguin is a Discord Bot build for the Data Science with Daniel Discord Server.
 
 Current functionality:
+
 - Message Replies (responses)
 - Reaction Roles (roles)
 - Welcome Message (notifications)
@@ -10,16 +11,20 @@ Current functionality:
 - Suggestions (suggestions)
 
 Future Functionality:
+
 - Twitch Stream Notification (background)
 
 ## Admin
 
 To run a local version of the bot:
+
 ```
-python -m bot.python
+make run
+make run-baby
 ```
 
 ## To Find and Kill the Process
+
 ```
 sudo ps -U ubuntu
 kill [PID]
