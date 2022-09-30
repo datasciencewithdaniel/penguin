@@ -1,3 +1,4 @@
+import argparse
 import os
 from dotenv import load_dotenv
 import discord
@@ -19,9 +20,22 @@ from bot import (
     testing
 )  # , tutoring_commands
 
+my_parser = argparse.ArgumentParser(description='Bot Selection')
+my_parser.add_argument('--bot',
+                       metavar='bot',
+                       type=str,
+                       nargs=1,
+                       choices=['0','1'],
+                       default='1',
+                       help='the bot selection to use')
+
+args = my_parser.parse_args()
 
 MYBOTS = ["Penguin", "BabyPenguin"]
-BOT = MYBOTS[0]
+if args.bot == '0':
+    BOT = MYBOTS[0]
+else:
+    BOT = MYBOTS[1]
 
 load_dotenv()
 if BOT == "BabyPenguin":
