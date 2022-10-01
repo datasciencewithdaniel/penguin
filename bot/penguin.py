@@ -1,6 +1,6 @@
 import argparse
-import os
-from dotenv import load_dotenv
+# import os
+# from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 import logging
@@ -21,31 +21,33 @@ from bot import (
 )  # , tutoring_commands
 
 my_parser = argparse.ArgumentParser(description='Bot Selection')
-my_parser.add_argument('--bot',
-                       metavar='bot',
-                       type=str,
-                       nargs=1,
-                       choices=['0','1'],
-                       default='1',
-                       help='the bot selection to use')
+my_parser.add_argument('--bot', metavar='bot', type=str, choices=['0','1'], default='1', help='the bot selection to use')
+my_parser.add_argument('--discord', metavar='discord', type=str, help='the discord token')
+my_parser.add_argument('--guild', metavar='guild', type=str, help='the discord guild name')
 
 args = my_parser.parse_args()
 
 MYBOTS = ["Penguin", "BabyPenguin"]
 if args.bot == '0':
     BOT = MYBOTS[0]
+    tutor_table = "tutoring-base"
 else:
     BOT = MYBOTS[1]
-
-load_dotenv()
-if BOT == "BabyPenguin":
-    TOKEN = os.getenv("DISCORD_TOKEN2")
     tutor_table = "tutoring-dev"
-else:
-    TOKEN = os.getenv("DISCORD_TOKEN")
-    tutor_table = "tutoring-base"
+
+TOKEN = args.discord
+GUILD_ID = args.guild
 contact_table = "website-contact"
-GUILD_ID = os.getenv("DISCORD_GUILD")
+
+# load_dotenv()
+# if BOT == "BabyPenguin":
+#     TOKEN = os.getenv("DISCORD_TOKEN2")
+#     tutor_table = "tutoring-dev"
+# else:
+#     TOKEN = os.getenv("DISCORD_TOKEN")
+#     tutor_table = "tutoring-base"
+# contact_table = "website-contact"
+# GUILD_ID = os.getenv("DISCORD_GUILD")
 
 logger = logging.getLogger("discord")
 logger.setLevel(logging.INFO)
