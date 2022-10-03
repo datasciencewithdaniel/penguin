@@ -14,8 +14,9 @@ class contact(commands.Cog):
         self.bot = bot
         self.GUILD_ID = GUILD_ID
         self.logger = logger
-        self.session = boto3.session.Session(profile_name="dswd")
-        self.resource = self.session.resource("dynamodb")
+        # self.session = boto3.session.Session(profile_name="dswd")
+        # self.resource = self.session.resource("dynamodb")
+        self.resource = boto3.resource("dynamodb")
         self.tablename = table
         self.table = self.resource.Table(self.tablename)
         self.channel_raw = 918845689285447681
