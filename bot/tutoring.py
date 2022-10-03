@@ -19,7 +19,7 @@ class tutoring(commands.Cog):
         self.logger = logger
         # self.session = boto3.session.Session(profile_name="dswd")
         # self.resource = self.session.resource("dynamodb")
-        self.resource = boto3.resource("dynamodb")
+        self.resource = boto3.resource("dynamodb", region_name="ap-southeast-2")
         self.tablename = table
         self.table = self.resource.Table(self.tablename)
         self.languages = ["Python", "SQL", "Java", "JavaScript"]
