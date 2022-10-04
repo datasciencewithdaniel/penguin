@@ -19,8 +19,8 @@ Future Functionality:
 To run a local version of the bot:
 
 ```
-make run
-make run-baby
+make run DISCORD_TOKEN=<DISCORD_TOKEN> GUILD_NAME="<GUILD_NAME>" AWS_ACCOUNT_DSWD=<DSWD_ACCOUNT_NUMBER>
+make run-baby DISCORD_TOKEN=<DISCORD_TOKEN> GUILD_NAME="<GUILD_NAME>" AWS_ACCOUNT_DSWD=<DSWD_ACCOUNT_NUMBER>
 ```
 
 ## To Find and Kill the Process
