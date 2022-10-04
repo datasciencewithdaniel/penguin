@@ -1,0 +1,13 @@
+# docker-compose.yml
+version: '3.8'
+services:
+
+  python-env:
+    image: python:3.10.7
+    # env_file: .env
+    environment:
+      - AWS_SDK_LOAD_CONFIG=1
+    working_dir: /work
+    volumes:
+      - .:/work
+      # - ~/.aws:/root/.aws
