@@ -10,13 +10,18 @@ from bot import helpers
 
 
 class contact(commands.Cog):
-    def __init__(self, bot, GUILD_ID, table, logger):
+    def __init__(self, bot, GUILD_ID, table, credentials, logger):
         self.bot = bot
         self.GUILD_ID = GUILD_ID
         self.logger = logger
         # self.session = boto3.session.Session(profile_name="dswd")
         # self.resource = self.session.resource("dynamodb")
-        self.resource = boto3.resource("dynamodb", region_name="ap-southeast-2")
+        self.resource = boto3.resource(
+            "dynamodb", region_name="ap-southeast-2",
+            aws_access_key_id=credentials['AccessKeyId'],
+            aws_secret_access_key=credentials['SecretAccessKey'],
+            aws_session_token=credentials['SessionToken']
+        )
         self.tablename = table
         self.table = self.resource.Table(self.tablename)
         self.channel_raw = 918845689285447681
