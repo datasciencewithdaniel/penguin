@@ -4,7 +4,8 @@ run:
 	python -m bot.penguin \
 		--bot 0 \
 		--discord $(DISCORD_TOKEN) \
-		--guild "$(GUILD_NAME)"'
+		--guild "$(GUILD_NAME)" \
+		--account $(AWS_ACCOUNT_DSWD)'
 .PHONY: run
 
 run-baby:
@@ -13,5 +14,6 @@ run-baby:
 	python -m bot.penguin \
 		--bot 1 \
 		--discord $(DISCORD_TOKEN) \
-		--guild "$(GUILD_NAME)"'
+		--guild "$(GUILD_NAME)" \
+		--account $(AWS_ACCOUNT_DSWD)'
 .PHONY: run-baby

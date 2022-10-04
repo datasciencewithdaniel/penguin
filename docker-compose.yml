@@ -10,4 +10,4 @@ services:
     working_dir: /work
     volumes:
       - .:/work
-      - ~/.aws:/root/.aws
+      # - ~/.aws:/root/.aws
