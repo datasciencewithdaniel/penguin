@@ -1,11 +1,8 @@
 import asyncio
 import boto3
 from boto3.dynamodb.conditions import Attr
-# import unicodedata
 import discord
 from discord.ext import commands
-# from discord import RawReactionActionEvent
-# from discord.utils import get
 from bot import helpers
 
 
@@ -14,8 +11,6 @@ class contact(commands.Cog):
         self.bot = bot
         self.GUILD_ID = GUILD_ID
         self.logger = logger
-        # self.session = boto3.session.Session(profile_name="dswd")
-        # self.resource = self.session.resource("dynamodb")
         self.resource = boto3.resource(
             "dynamodb", region_name="ap-southeast-2",
             aws_access_key_id=credentials['AccessKeyId'],

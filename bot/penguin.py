@@ -1,6 +1,4 @@
 import argparse
-# import os
-# from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 import logging
@@ -47,19 +45,6 @@ assumed_role_object = sts_client.assume_role(
     RoleSessionName=f"AssumeRole{BOT}"
 )
 credentials = assumed_role_object['Credentials']
-# aws_access_key_id=credentials['AccessKeyId'],
-# aws_secret_access_key=credentials['SecretAccessKey'],
-# aws_session_token=credentials['SessionToken']
-
-# load_dotenv()
-# if BOT == "BabyPenguin":
-#     TOKEN = os.getenv("DISCORD_TOKEN2")
-#     tutor_table = "tutoring-dev"
-# else:
-#     TOKEN = os.getenv("DISCORD_TOKEN")
-#     tutor_table = "tutoring-base"
-# contact_table = "website-contact"
-# GUILD_ID = os.getenv("DISCORD_GUILD")
 
 logger = logging.getLogger("discord")
 logger.setLevel(logging.INFO)
